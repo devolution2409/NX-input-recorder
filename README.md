@@ -16,13 +16,14 @@ FROM devkitpro/devkita64
 
 WORKDIR /tmp/
 
-#getting pacman
+#Getting pacman and the deps needed for Plutonium
 RUN 	wget  https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb && \
 	sudo dpkg -i devkitpro-pacman.deb && \ 
 	dkp-pacman -S --noconfirm switch-sdl2 switch-sdl2_ttf switch-sdl2_image switch-sdl2_gfx switch-sdl2_mixer switch-mesa switch-glad switch-glm switch-libdrm_nouveau switch-libwebp switch-libpng switch-freetype switch-bzip2 switch-libjpeg-turbo switch-opusfile switch-libopus
 
 WORKDIR /
 
+#Cloning and compiling Plutonium
 RUN git clone https://github.com/XorTroll/Plutonium.git 
 
 WORKDIR /Plutonium/Plutonium
@@ -37,6 +38,7 @@ RUN git clone https://github.com/switchbrew/switch-examples.git && \
 
 WORKDIR /input-recorder
 
+#Symlinking it
 RUN ln -s /Plutonium/Plutonium/Ouput /input-recorder/Plutonium
 
 
@@ -44,6 +46,11 @@ CMD ["make"]
 
 ```
 
+
+Once this is done you can make the image by using the following
+docker build -t plutonium-sdk:latest .
+
+and run the make.sh script :)
 
 ## Versioning
 
