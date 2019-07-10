@@ -5,13 +5,13 @@ sudo chown -R devolution .
 #creating dist stuff
 ## the nsp 
 rm -rf ./dist
-mkdir -p ./dist/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)
+mkdir -p ./dist/atmosphere/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)
 echo "Moving .nsp to dist folder.."
-mv ./input-recorder.nsp dist/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)/exefs.nsp 
+mv ./input-recorder.nsp dist/atmosphere/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)/exefs.nsp 
 
 ## the boot flag
-mkdir -p ./dist/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)/flags
+mkdir -p ./dist/atmosphere/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)/flags
 echo "Creating boot2.flag.."
-touch ./dist/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)/flags/boot2.flag
+touch ./dist/atmosphere/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;)/flags/boot2.flag
 ## clean all the stuff
 ./clean.sh
