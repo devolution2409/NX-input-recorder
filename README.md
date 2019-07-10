@@ -7,7 +7,42 @@ This homebrew goal is to record gameplay as a pair of time and keypresses, in or
 
 ### Prerequisites
 
-To be able to build this NRO. One must download and compile the latest version of [Plutonium](https://github.com/XorTroll/Plutonium) and place the `include` and `lib` folder in the Plutonium folder. (The Plutonium folder in git is just a symlink to the compiled Plutonium).
+To be able to build this `.nsp`, one must download and compile the latest version of [Plutonium](https://github.com/XorTroll/Plutonium) and place the `include` and `lib` folder in the Plutonium folder. (The Plutonium folder in git is just a symlink to the compiled Plutonium).
+
+Or you can use the following Dockerfile in order to create an image with devkitpro and plutonium.
+
+``` 
+FROM devkitpro/devkita64
+
+WORKDIR /tmp/
+
+#getting pacman
+RUN 	wget  https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb && \
+	sudo dpkg -i devkitpro-pacman.deb && \ 
+	dkp-pacman -S --noconfirm switch-sdl2 switch-sdl2_ttf switch-sdl2_image switch-sdl2_gfx switch-sdl2_mixer switch-mesa switch-glad switch-glm switch-libdrm_nouveau switch-libwebp switch-libpng switch-freetype switch-bzip2 switch-libjpeg-turbo switch-opusfile switch-libopus
+
+WORKDIR /
+
+RUN git clone https://github.com/XorTroll/Plutonium.git 
+
+WORKDIR /Plutonium/Plutonium
+
+RUN make
+
+WORKDIR /
+
+RUN git clone https://github.com/switchbrew/switch-examples.git && \
+	apt-get update && \
+	apt-get install -y vim
+
+WORKDIR /input-recorder
+
+RUN ln -s /Plutonium/Plutonium/Ouput /input-recorder/Plutonium
+
+
+CMD ["make"]
+
+```
 
 
 ## Versioning
