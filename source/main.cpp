@@ -50,9 +50,9 @@ extern "C"
 			fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_SM));
 
 		// Enable this if you want to use HID.
-		/*rc = hidInitialize();
+		rc = hidInitialize();
 		  if (R_FAILED(rc))
-		  fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));*/
+		  fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
 
 		//Enable this if you want to use time.
 		/*rc = timeInitialize();
@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
 
 		}
 
-		if (record)
+		if (false)
 		{
 
 
@@ -172,4 +172,5 @@ int main(int argc, char* argv[])
 	}
 	// Deinitialization and resources clean up code can go here.
 	return 0;
+
 }
