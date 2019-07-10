@@ -2,3 +2,4 @@
 *.nacp
 *.key
 build/*
+ignore/

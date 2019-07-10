@@ -6,51 +6,76 @@
 // Include the main libnx system header, for Switch development
 #include <switch.h>
 
-#include <MainApplication.hpp>
+// Sysmodules should not use applet*.
+u32 __nx_applet_type = AppletType_None;
+
+// Adjust size as needed.
+#define INNER_HEAP_SIZE 0x80000
+size_t nx_inner_heap_size = INNER_HEAP_SIZE;
+char   nx_inner_heap[INNER_HEAP_SIZE];
+
+void __libnx_initheap(void)
+{
+	void*  addr = nx_inner_heap;
+	size_t size = nx_inner_heap_size;
+
+	// Newlib
+	extern char* fake_heap_start;
+	extern char* fake_heap_end;
+
+	fake_heap_start = (char*)addr;
+	fake_heap_end   = (char*)addr + size;
+}
+
+// Init/exit services, update as needed.
+void __attribute__((weak)) __appInit(void)
+{
+    Result rc;
+
+    // Initialize default services.
+    rc = smInitialize();
+    if (R_FAILED(rc))
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_SM));
+
+    // Enable this if you want to use HID.
+    /*rc = hidInitialize();
+    if (R_FAILED(rc))
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));*/
+
+    //Enable this if you want to use time.
+    /*rc = timeInitialize();
+    if (R_FAILED(rc))
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_Time));
+
+    __libnx_init_time();*/
+
+    rc = fsInitialize();
+    if (R_FAILED(rc))
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_FS));
+
+    fsdevMountSdmc();
+}
+
+void __attribute__((weak)) userAppExit(void);
+
+void __attribute__((weak)) __appExit(void)
+{
+    // Cleanup default services.
+    fsdevUnmountAll();
+    fsExit();
+    //timeExit();//Enable this if you want to use time.
+    //hidExit();// Enable this if you want to use HID.
+    smExit();
+}
 
 // Main program entrypoint
 int main(int argc, char* argv[])
 {
-	// This example uses a text console, as a simple way to output text to the screen.
-	// If you want to write a software-rendered graphics application,
-	//   take a look at the graphics/simplegfx example, which uses the libnx Framebuffer API instead.
-	// If on the other hand you want to write an OpenGL based application,
-	//   take a look at the graphics/opengl set of examples, which uses EGL instead.
-	consoleInit(NULL);
+    // Initialization code can go here.
 
-	// Other initialization goes here. As a demonstration, we print hello world.
-	printf("Hello World!\n");
+    // Your code / main loop goes here.
+    // If you need threads, you can use threadCreate etc.
 
-	// Main loop
-	while (appletMainLoop())
-	{
-		// Scan all the inputs. This should be done once for each frame
-		hidScanInput();
-
-		// hidKeysDown returns information about which buttons have been
-		// just pressed in this frame compared to the previous one
-		u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-
-		if (kDown & KEY_PLUS)
-			break; // break in order to return to hbmenu
-
-		if (kDown & KEY_MINUS)
-		{
-			// Create the application
-			MainApplication *amain = new MainApplication();
-			//         // Show it. This function will finalize when the application's "Close()" function is called.
-			amain->Show();
-			//                 // IMPORTANT! free the application to destroy allocated memory and to finalize graphics.
-			delete amain;
-			//
-		}
-		// Your code goes here
-
-		// Update the console, sending a new frame to the display
-		consoleUpdate(NULL);
-	}
-
-	// Deinitialize and clean up resources used by the console (important!)
-	consoleExit(NULL);
-	return 0;
+    // Deinitialization and resources clean up code can go here.
+    return 0;
 }
