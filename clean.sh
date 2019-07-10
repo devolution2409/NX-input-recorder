@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo chown -R devolution .
 
 rm -rf *.elf
 rm -rf *.nacp

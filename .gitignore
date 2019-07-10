@@ -1,5 +1,6 @@
 *.elf
 *.nacp
 *.key
-build/*
+build/
 ignore/
+dist/
