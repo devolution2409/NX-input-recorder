@@ -1,6 +1,6 @@
 {
 	"name":	"sysmodule",
-	"title_id":	"0x0100000000000123",
+	"title_id":	"0532232232232000",
 	"title_id_range_min":	"0x0100000000000123",
 	"title_id_range_max":	"0x0100000000000123",
 	"main_thread_stack_size":	"0x00004000",
