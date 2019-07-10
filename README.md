@@ -48,7 +48,7 @@ CMD ["make"]
 
 
 Once this is done you can make the image by using the following
-docker build -t plutonium-sdk:latest .
+```docker build -t plutonium-sdk:latest .```
 
 and run the make.sh script :)
 
