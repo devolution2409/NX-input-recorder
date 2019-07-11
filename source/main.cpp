@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 // Include the main libnx system header, for Switch development
 #include <switch.h>
 
@@ -18,7 +17,6 @@
 #include <list>
 #include <string>
 #include <fstream>
-
 
 extern "C" 
 {
@@ -187,10 +185,21 @@ int main(int argc, char* argv[])
 			// write them i guess
 			if (!pressedButtons.empty())
 			{
+				//recording the joystick state
+				//https://switchbrew.github.io/libnx/hid_8h.html	
+				
+				//https://switchbrew.github.io/libnx/structJoystickPosition.html
+				JoystickPosition lPos;			
+				JoystickPosition rPos;	
+
+				//reading left & right joystick pos
+				hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_LEFT);
+				hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_RIGHT);
+				//writing current frame as well as the pressed buttons and the sticks state
 				fs << currFrame << " ";
 				for (auto const &v: pressedButtons)
 					fs << v << ";";
-				fs << " 0;0 0;0" << std::endl;
+				fs << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
 
 			}
 			currFrame++;
