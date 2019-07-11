@@ -8,8 +8,14 @@ This homebrew goal is to record gameplay as a pair of time and keypresses, in or
 ### Prerequisites
 
 To be able to build this `.nsp`, one must download and compile the latest version of [Plutonium](https://github.com/XorTroll/Plutonium) and place the `include` and `lib` folder in the Plutonium folder. (The Plutonium folder in git is just a symlink to the compiled Plutonium).
+#### Building from scratch
 
-Or you can use the following Dockerfile in order to create an image with devkitpro and plutonium.
+Download & compile Plutonium. Download and install devkipro, and find a way to make it work for you.
+
+#### Build using docker
+Alternatively, you can use the following Dockerfile in order to create an image with devkitpro and plutonium.
+This image will set up all the directories needed.
+
 
 ``` 
 FROM devkitpro/devkita64
@@ -50,7 +56,7 @@ CMD ["make"]
 Once this is done you can make the image by using the following
 ```docker build -t plutonium-sdk:latest .```
 
-and run the make.sh script :)
+Once it's built, you can clone this repository and use make.sh.
 
 ## Versioning
 
