@@ -7,7 +7,7 @@
 #include <switch.h>
 
 // Sysmodules should not use applet*.
-u32 __nx_applet_type = AppletType_None;
+
 
 
 // Adjust size as needed.
@@ -22,7 +22,7 @@ u32 __nx_applet_type = AppletType_None;
 
 extern "C" 
 {
-
+	u32 __nx_applet_type = AppletType_None;
 	size_t nx_inner_heap_size = INNER_HEAP_SIZE;
 	char   nx_inner_heap[INNER_HEAP_SIZE];
 
@@ -51,8 +51,8 @@ extern "C"
 
 		// Enable this if you want to use HID.
 		rc = hidInitialize();
-		  if (R_FAILED(rc))
-		  fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
+		if (R_FAILED(rc))
+			fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
 
 		//Enable this if you want to use time.
 		/*rc = timeInitialize();
@@ -64,6 +64,13 @@ extern "C"
 		rc = fsInitialize();
 		if (R_FAILED(rc))
 			fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_FS));
+
+
+		//init vsync events?
+		rc = viInitialize(ViServiceType_System);
+		if(R_FAILED(rc))
+			fatalSimple(rc);
+
 
 		fsdevMountSdmc();
 	}
@@ -124,7 +131,30 @@ int main(int argc, char* argv[])
 	};
 
 	std::fstream fs;
-	while (appletMainLoop())
+	Event vsync_event;
+
+
+	Result rc;
+	ViDisplay disp;
+	rc = viOpenDefaultDisplay(&disp);
+	if(R_FAILED(rc))
+		fatalSimple(rc);
+	rc = viGetDisplayVsyncEvent(&disp, &vsync_event);
+	if(R_FAILED(rc))
+		fatalSimple(rc);
+
+
+	while (true)
+	{
+
+		//wait on screen refresh i guess
+		// uh whats a good timeout kev
+		eventWait(&vsync_event, 33e6);
+		//now we can do our shit i guess
+
+	}
+
+	while (false)
 	{
 
 
