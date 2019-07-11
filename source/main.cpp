@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
 				fs << currFrame << " ";
 				for (auto const &v: pressedButtons)
 					fs << v << ";";
-				fs << " 0;0 0;0";
+				fs << " 0;0 0;0" << std::endl;
 
 			}
 			currFrame++;
