@@ -149,13 +149,12 @@ int main(int argc, char* argv[])
 
 		//wait on screen refresh i guess
 		// uh whats a good timeout kev
-		eventWait(&vsync_event, 33e6);
+		rc = eventWait(&vsync_event,UINT64_MAX );
+		if (R_FAILED(rc))
+			fatalSimple(rc);
+
+
 		//now we can do our shit i guess
-
-	}
-
-	while (false)
-	{
 
 
 		hidScanInput();
@@ -171,7 +170,7 @@ int main(int argc, char* argv[])
 
 		}
 
-		if (false)
+		if (record)
 		{
 
 
