@@ -79,8 +79,9 @@ extern "C"
 		// Cleanup default services.
 		fsdevUnmountAll();
 		fsExit();
+
 		//timeExit();//Enable this if you want to use time.
-		//hidExit();// Enable this if you want to use HID.
+		hidExit();// Enable this if you want to use HID.
 		smExit();
 	}
 
