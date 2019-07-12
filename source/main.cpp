@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
 			else
 			{
 				//nothing was pressed. get stick position anyway
-				fs << "NONE" << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
+				fs << currFrame <<" NONE" << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
 
 			}
 			currFrame++;
