@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
 
 				//reading left & right joystick pos
 				hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_LEFT);
-				hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_RIGHT);
+				hidJoystickRead(&rPos,CONTROLLER_P1_AUTO,JOYSTICK_RIGHT);
 				//writing current frame as well as the pressed buttons and the sticks state
 				fs << currFrame << " ";
 				for (auto const &v: pressedButtons)
