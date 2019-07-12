@@ -81,7 +81,7 @@ extern "C"
 		fsExit();
 
 		//timeExit();//Enable this if you want to use time.
-		hidExit();// Enable this if you want to use HID.
+		//hidExit();// Enable this if you want to use HID.
 		smExit();
 	}
 
@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 
 	// Your code / main loop goes here.
 	// If you need threads, you can use threadCreate etc.
-	bool record = false;
+	bool record = true;
 	int currFrame = 0;	
 
 	// "reverse" map keys to their text counterpart
@@ -200,7 +200,8 @@ int main(int argc, char* argv[])
 				fs << currFrame << " ";
 				for (auto const &v: pressedButtons)
 					fs << v << ";";
-				fs << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
+				fs << " "  << "0;0 0;0";
+// << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
 
 			}
 			currFrame++;
