@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 	int currFrame = 0;	
 
 	// "reverse" map keys to their text counterpart
-
+/*
 	const std::map<int, std::string> bla = {
 		{1<<0,"KEY_A"},
 		{1<<1,"KEY_B"},
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
 		{1<<26,"KEY_SL_RIGHT"},
 		{1<<27,"KEY_SR_RIGHT"},
 	};
-
+*/
 	std::fstream fs;
 	Event vsync_event;
 
@@ -181,36 +181,14 @@ int main(int argc, char* argv[])
 			hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_LEFT);
 			hidJoystickRead(&rPos,CONTROLLER_P1_AUTO,JOYSTICK_RIGHT);
 
-			std::list<std::string> pressedButtons;
-			//searched for pressed keys
-			for (auto it = bla.begin(); it != bla.end(); ++it)
-			{
-				if (kDown & it->first)
-				{
-					pressedButtons.push_back(it->second);
-				}
-
-			}
 			// write them i guess
-			if (!pressedButtons.empty())
-			{
-				//recording the joystick state
-				//https://switchbrew.github.io/libnx/hid_8h.html	
+			//recording the joystick state
+			
+			//https://switchbrew.github.io/libnx/hid_8h.html	
 
 
-				//writing current frame as well as the pressed buttons and the sticks state
-				fs << currFrame << " ";
-				for (auto const &v: pressedButtons)
-					fs << v << ";";
-				fs << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
-
-			}
-			else
-			{
-				//nothing was pressed. get stick position anyway
-				fs << currFrame <<" NONE" << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
-
-			}
+			//writing current frame as well as the pressed buttons and the sticks state
+			fs << kHeld << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
 			currFrame++;
 
 		}
