@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 		u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
 		// if those two are down at the sametime we start recording
 		if (((kDown & KEY_PLUS) && (kHeld & KEY_MINUS))
-			 || ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))){
+				|| ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))){
 			record = !record;
 			currFrame = 0;	
 			if (record)
@@ -174,6 +174,12 @@ int main(int argc, char* argv[])
 		if (record)
 		{
 
+			//https://switchbrew.github.io/libnx/structJoystickPosition.html
+			JoystickPosition lPos;			
+			JoystickPosition rPos;	
+			//reading left & right joystick pos
+			hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_LEFT);
+			hidJoystickRead(&rPos,CONTROLLER_P1_AUTO,JOYSTICK_RIGHT);
 
 			std::list<std::string> pressedButtons;
 			//searched for pressed keys
@@ -190,19 +196,19 @@ int main(int argc, char* argv[])
 			{
 				//recording the joystick state
 				//https://switchbrew.github.io/libnx/hid_8h.html	
-				
-				//https://switchbrew.github.io/libnx/structJoystickPosition.html
-				JoystickPosition lPos;			
-				JoystickPosition rPos;	
 
-				//reading left & right joystick pos
-				hidJoystickRead(&lPos,CONTROLLER_P1_AUTO,JOYSTICK_LEFT);
-				hidJoystickRead(&rPos,CONTROLLER_P1_AUTO,JOYSTICK_RIGHT);
+
 				//writing current frame as well as the pressed buttons and the sticks state
 				fs << currFrame << " ";
 				for (auto const &v: pressedButtons)
 					fs << v << ";";
 				fs << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
+
+			}
+			else
+			{
+				//nothing was pressed. get stick position anyway
+				fs << "NONE" << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
 
 			}
 			currFrame++;
