@@ -141,6 +141,7 @@ int main(int argc, char* argv[])
 	rc = viGetDisplayVsyncEvent(&disp, &vsync_event);
 	if(R_FAILED(rc))
 		fatalSimple(rc);
+	fs.open("/input-recorder/test.txt",std::fstream::out);
 
 
 	while (true)
@@ -158,8 +159,10 @@ int main(int argc, char* argv[])
 
 		hidScanInput();
 		u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+		u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
 		// if those two are down at the sametime we start recording
-		if ((kDown & KEY_PLUS) &&( kDown &  KEY_MINUS)){
+		if (((kDown & KEY_PLUS) && (kHeld & KEY_MINUS))
+			 || ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))){
 			record = !record;
 			currFrame = 0;	
 			if (record)
@@ -200,8 +203,7 @@ int main(int argc, char* argv[])
 				fs << currFrame << " ";
 				for (auto const &v: pressedButtons)
 					fs << v << ";";
-				fs << " "  << "0;0 0;0";
-// << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
+				fs << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
 
 			}
 			currFrame++;
