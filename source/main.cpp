@@ -69,6 +69,26 @@ extern "C"
 		if(R_FAILED(rc))
 			fatalSimple(rc);
 
+		// need this to get pId
+		rc = pmdmntInitialize();
+		if(R_FAILED(rc))
+			fatalSimple(rc);
+
+		// need this to get applicationid
+		rc = pminfoInitialize();
+		if(R_FAILED(rc))
+			fatalSimple(rc);
+
+		//setting hos version because apparently it changes some functions
+		rc = setsysInitialize();
+		if (R_SUCCEEDED(rc)) {
+			SetSysFirmwareVersion fw;
+			rc = setsysGetFirmwareVersion(&fw);
+			if (R_SUCCEEDED(rc))
+				hosversionSet(MAKEHOSVERSION(fw.major, fw.minor, fw.micro));
+			setsysExit();
+		}
+
 
 		fsdevMountSdmc();
 	}
@@ -81,8 +101,9 @@ extern "C"
 		fsExit();
 
 		//timeExit();//Enable this if you want to use time.
-		//hidExit();// Enable this if you want to use HID.
+		hidExit();// Enable this if you want to use HID.
 		smExit();
+		pmdmntExit();
 	}
 
 }// end extern C
@@ -97,38 +118,38 @@ int main(int argc, char* argv[])
 	int currFrame = 0;	
 
 	// "reverse" map keys to their text counterpart
-/*
-	const std::map<int, std::string> bla = {
-		{1<<0,"KEY_A"},
-		{1<<1,"KEY_B"},
-		{1<<2,"KEY_X"},
-		{1<<3,"KEY_Y"},
-		{1<<4,"KEY_LSTICK"},
-		{1<<5,"KEY_RSTICK"},
-		{1<<6,"KEY_L"},
-		{1<<7,"KEY_R"},
-		{1<<8,"KEY_ZL"},
-		{1<<9,"KEY_ZR"},
-		{1<<10,"KEY_PLUS"},
-		{1<<11,"KEY_MINUS"},
-		{1<<12,"KEY_DLEFT"},
-		{1<<13,"KEY_DUP"},
-		{1<<14,"KEY_DRIGHT"},
-		{1<<15,"KEY_DDOWN"},
-		{1<<16,"KEY_LSTICK_LEFT"},
-		{1<<17,"KEY_LSTICK_UP"},
-		{1<<18,"KEY_LSTICK_RIGHT"},
-		{1<<19,"KEY_LSTICK_DOWN"},
-		{1<<20,"KEY_RSTICK_LEFT"},
-		{1<<21,"KEY_RSTICK_UP"},
-		{1<<22,"KEY_RSTICK_RIGHT"},
-		{1<<23,"KEY_RSTICK_DOWN"},
-		{1<<24,"KEY_SL_LEFT"},
-		{1<<25,"KEY_SR_RIGHT"},
-		{1<<26,"KEY_SL_RIGHT"},
-		{1<<27,"KEY_SR_RIGHT"},
-	};
-*/
+	/*
+	   const std::map<int, std::string> bla = {
+	   {1<<0,"KEY_A"},
+	   {1<<1,"KEY_B"},
+	   {1<<2,"KEY_X"},
+	   {1<<3,"KEY_Y"},
+	   {1<<4,"KEY_LSTICK"},
+	   {1<<5,"KEY_RSTICK"},
+	   {1<<6,"KEY_L"},
+	   {1<<7,"KEY_R"},
+	   {1<<8,"KEY_ZL"},
+	   {1<<9,"KEY_ZR"},
+	   {1<<10,"KEY_PLUS"},
+	   {1<<11,"KEY_MINUS"},
+	   {1<<12,"KEY_DLEFT"},
+	   {1<<13,"KEY_DUP"},
+	   {1<<14,"KEY_DRIGHT"},
+	   {1<<15,"KEY_DDOWN"},
+	   {1<<16,"KEY_LSTICK_LEFT"},
+	   {1<<17,"KEY_LSTICK_UP"},
+	   {1<<18,"KEY_LSTICK_RIGHT"},
+	   {1<<19,"KEY_LSTICK_DOWN"},
+	   {1<<20,"KEY_RSTICK_LEFT"},
+	   {1<<21,"KEY_RSTICK_UP"},
+	   {1<<22,"KEY_RSTICK_RIGHT"},
+	   {1<<23,"KEY_RSTICK_DOWN"},
+	   {1<<24,"KEY_SL_LEFT"},
+	   {1<<25,"KEY_SR_RIGHT"},
+	   {1<<26,"KEY_SL_RIGHT"},
+	   {1<<27,"KEY_SR_RIGHT"},
+	   };
+	 */
 	std::fstream fs;
 	Event vsync_event;
 
@@ -167,7 +188,27 @@ int main(int argc, char* argv[])
 			if (record)
 				fs.open("/input-recorder/test.txt",std::fstream::out);
 			else
+			{
+				//trying to  find out wtf we recorded:
+				u64 pid;
+				if (R_FAILED(pmdmntGetApplicationPid(&pid)))
+				{
+					fs << std::endl << "couldn't read pid feelsdankman";
+				}
+				else
+				{
+					u64 title;
+					fs << std::endl << "process id:" << pid;
+					Result wut = pminfoGetTitleId(&title,pid);
+					if (R_FAILED(wut))
+						fatalSimple(322);
+					else
+						fs << " " << " title id: " << title;			
+
+				}
+
 				fs.close();
+			}
 
 		}
 
@@ -183,12 +224,13 @@ int main(int argc, char* argv[])
 
 			// write them i guess
 			//recording the joystick state
-			
+
 			//https://switchbrew.github.io/libnx/hid_8h.html	
 
 
 			//writing current frame as well as the pressed buttons and the sticks state
 			fs << kHeld << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";" << rPos.dy  << std::endl;
+
 			currFrame++;
 
 		}
