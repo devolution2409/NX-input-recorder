@@ -17,7 +17,10 @@
 #include <list>
 #include <string>
 #include <fstream>
-
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include <cstring>
 extern "C" 
 {
 	u32 __nx_applet_type = AppletType_None;
@@ -88,7 +91,11 @@ extern "C"
 				hosversionSet(MAKEHOSVERSION(fw.major, fw.minor, fw.micro));
 			setsysExit();
 		}
+		rc = nsInitialize();
 
+		if(R_FAILED(rc))
+			fatalSimple(rc);
+		
 
 		fsdevMountSdmc();
 	}
@@ -104,6 +111,7 @@ extern "C"
 		hidExit();// Enable this if you want to use HID.
 		smExit();
 		pmdmntExit();
+		nsExit();
 	}
 
 }// end extern C
@@ -182,14 +190,15 @@ int main(int argc, char* argv[])
 		u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
 		// if those two are down at the sametime we start recording
 		if (((kDown & KEY_PLUS) && (kHeld & KEY_MINUS))
-				|| ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))){
+				|| ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS)))
+		{
 			record = !record;
 			currFrame = 0;	
 			if (record)
-				fs.open("/input-recorder/test.txt",std::fstream::out);
-			else
 			{
-				//trying to  find out wtf we recorded:
+				fs.open("/input-recorder/test.txt",std::fstream::out);
+				std::string filename;
+				//getting title ID
 				u64 pid;
 				if (R_FAILED(pmdmntGetApplicationPid(&pid)))
 				{
@@ -197,15 +206,53 @@ int main(int argc, char* argv[])
 				}
 				else
 				{
+					// Getting pID to get
 					u64 title;
 					fs << std::endl << "process id:" << pid;
+					// Getting title ID as ex
 					Result wut = pminfoGetTitleId(&title,pid);
 					if (R_FAILED(wut))
-						fatalSimple(322);
+					{
+						// if we cant get it, the directory should be unknown i guess
+						//fatalSimple();
+					}	
 					else
-						fs << " " << " title id: " << title;			
+					{
+						// title is hex, we need it as decimal
+						fs << " " << " title id: " << std::hex << title << std::dec << std::endl;
+				
+						NsApplicationControlData appControlData;
+						size_t appControlDataSize = 0;
+						NsApplicationContentMetaStatus appContentMetaStatus;
+						NacpLanguageEntry *languageEntry = nullptr; 
+
+						std::memset(&appControlData, 0x00, sizeof(NsApplicationControlData));
+						
+						int titleID;
+						std::stringstream stream;
+						stream << title;
+						stream >> std::hex >> titleID;
+
+						nsGetApplicationControlData(1, titleID, &appControlData, sizeof(NsApplicationControlData), &appControlDataSize);
+						nsListApplicationContentMetaStatus(titleID, 0, &appContentMetaStatus, sizeof(NsApplicationContentMetaStatus), nullptr);
+						//nacpGetLanguageEntry(&appControlData.nacp, &languageEntry);
+						
+						//fs << "Game is: " << std::string(languageEntry->name);
+
+
+
+					}
+
+
 
 				}
+
+
+			}
+
+			else
+			{
+				//trying to  find out wtf we recorded:
 
 				fs.close();
 			}
