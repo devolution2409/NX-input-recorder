@@ -31,7 +31,7 @@
             "label": "Build Release",
             "type": "shell",
             "promptOnClose": true,
-            "command": "make -j8",
+            "command": "${workspaceRoot}/.vscode/scripts/make.sh",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
@@ -60,7 +60,7 @@
             "label": "Clean",
             "type": "shell",
             "promptOnClose": true,
-            "command": "make clean -j8",
+            "command": "${workspaceRoot}/.vscode/scripts/clean.sh",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
