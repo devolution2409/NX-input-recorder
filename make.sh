@@ -1,5 +1,5 @@
 #!/bin/bash
-docker run --name pluto  --rm -v $(pwd):/input-recorder plutonium-sdk;
+docker run --name pluto  --rm -v $(pwd):/input-recorder plutonium-sdk make;
 
 result=($?);
 

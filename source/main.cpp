@@ -5,7 +5,7 @@
 // Include the main libnx system header, for Switch development
 #include <switch.h>
 
-// Sysmodules should not use applet*.
+
 
 
 
@@ -23,6 +23,7 @@
 #include <cstring>
 extern "C" 
 {
+	// Sysmodules should not use applet*.
 	u32 __nx_applet_type = AppletType_None;
 	size_t nx_inner_heap_size = INNER_HEAP_SIZE;
 	char   nx_inner_heap[INNER_HEAP_SIZE];
@@ -92,7 +93,6 @@ extern "C"
 			setsysExit();
 		}
 		rc = nsInitialize();
-
 		if(R_FAILED(rc))
 			fatalSimple(rc);
 		
@@ -217,30 +217,7 @@ int main(int argc, char* argv[])
 						//fatalSimple();
 					}	
 					else
-					{
-						// title is hex, we need it as decimal
-						fs << " " << " title id: " << std::hex << title << std::dec << std::endl;
-				
-						NsApplicationControlData appControlData;
-						size_t appControlDataSize = 0;
-						NsApplicationContentMetaStatus appContentMetaStatus;
-						NacpLanguageEntry *languageEntry = nullptr; 
-
-						std::memset(&appControlData, 0x00, sizeof(NsApplicationControlData));
-						
-						int titleID;
-						std::stringstream stream;
-						stream << title;
-						stream >> std::hex >> titleID;
-
-						nsGetApplicationControlData(1, titleID, &appControlData, sizeof(NsApplicationControlData), &appControlDataSize);
-						nsListApplicationContentMetaStatus(titleID, 0, &appContentMetaStatus, sizeof(NsApplicationContentMetaStatus), nullptr);
-						//nacpGetLanguageEntry(&appControlData.nacp, &languageEntry);
-						
-						//fs << "Game is: " << std::string(languageEntry->name);
-
-
-
+ 					{
 					}
 
 
