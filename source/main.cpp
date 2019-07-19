@@ -1,12 +1,13 @@
 // Include the most common headers from the C standard library
 #include <stdio.h>
 #include <stdlib.h>
+// this should probably be cstring but whatever
 #include <string.h>
 // Include the main libnx system header, for Switch development
 #include <switch.h>
 
 
-
+#include "helpers/SystemHelper.hpp"
 
 
 // Adjust size as needed.
@@ -75,8 +76,9 @@ extern "C"
 
 		// need this to get pId
 		rc = pmdmntInitialize();
-		if(R_FAILED(rc))
+		if(R_FAILED(rc)){
 			fatalSimple(rc);
+		}
 
 		// need this to get applicationid
 		rc = pminfoInitialize();
