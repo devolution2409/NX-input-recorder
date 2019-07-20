@@ -2,10 +2,16 @@
 
 namespace Helper {
 
-RecordWriter::RecordWriter(std::string foldername = "")
+RecordWriter::RecordWriter(std::string foldername)
 {
-    if (foldername.empty()) {
+    std::fstream test;
 
+    test.open("/input-recorder/debug_log.txt", std::fstream::out);
+    // setting up the folder in which we want to write the recording
+    int i = 0;
+    test << ++i << std::endl;
+    if (foldername.empty()) {
+        test << ++i << std::endl;
         u64 titleID;
         try {
             titleID = Helper::System::GetActiveTitleID();
@@ -13,34 +19,59 @@ RecordWriter::RecordWriter(std::string foldername = "")
         }
         catch (...) {
             // if we couldn't get id
+            test << ++i << "catch block detected" << std::endl;
             foldername = "unknown";
         }
     }
+    test << ++i << std::endl;
     // in any case we check if the directory exists
-    std::filesystem::directory dir = "sdcard:/input-recorder";
-
+    filesystem::directory_entry dir(filesystem::path("sdcard:/input-recorder"));
+    // if input-recorder exist
+    test << ++i << std::endl;
     if (dir.exists()) {
-        dir = "sdcard:/input-recorder/" + foldername;
+        test << ++i << "dir exists" << std::endl;
+        dir = filesystem::directory_entry(
+            filesystem::path("sdcard:/input-recorder/" + foldername));
+        // check if sub directory exists
         if (dir.exists()) {
-            this->mFoldername = dir;
+            test << ++i << "this one should exist" << std::endl;
+            this->mFoldername = dir.path();
         }
-        std::filesystem::create_directory(
-            std::filesystem::path(this->mFoldername));
-    }
-}
-
-std::string RecordWriter::getBuffer() { return this->buffer; }
-
-RecordWriter::~RecordWriter() {}
-
-void RecordWriter::addToBuffer(std::string text)
-{
-    if (this->buffer.empty()) {
-        this->buffer = text;
+        test << ++i << "trying to create dir" << std::endl;
+        filesystem::create_directory(this->mFoldername);
     }
     else {
-        this->buffer += text;
+        filesystem::create_directory(
+            filesystem::path("sdcard:/input-recorder"));
+        filesystem::create_directory(
+            filesystem::path("sdcard:/input-recorder/" + foldername));
     }
+
+    if (R_FAILED(timeInitialize())) {
+        // random file name i guess
+    }
+    else {
+        u64 now;
+        timeGetCurrentTime(TimeType_UserSystemClock, &now);
+        this->mFilename =
+            this->mFoldername.string() + "/" + std::to_string(now) + ".record";
+        timeExit();
+    }
+    fs.open(this->mFilename, std::fstream::out);
+    test.close();
+}
+
+RecordWriter::~RecordWriter() { fs.close(); }
+
+void RecordWriter::AddInputs(InputInfos info) { this->infos.push_back(info); }
+
+void RecordWriter::WriteInfos()
+{
+    for (const auto &i : this->infos) {
+        fs << i.controller << " " << i.kHeld << " " << i.lPos.dx << " "
+           << i.lPos.dy << " " << i.rPos.dx << " " << i.rPos.dy << " ";
+    }
+    fs << std::endl;
 }
 
 } // namespace Helper
