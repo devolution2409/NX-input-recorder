@@ -14,6 +14,13 @@
   CONTROLLER_UNKNOWN = 9,
   CONTROLLER_P1_AUTO = 10  */
 
+struct InputInfos {
+  HidControllerID controller;
+  u64 kHeld;
+  JoystickPosition lPos;
+  JoystickPosition rPos;
+};
+
 class InputRecorder {
 
 public:
@@ -23,14 +30,6 @@ public:
   InputInfos Record();
 
 private:
-  HIDControllerID mController; // which controller are we recording
+  HidControllerID mController; // which controller are we recording
   InputRecorder();
-
-}
-
-struct InputInfos {
-  HidControllerID controller;
-  u64 kHeld;
-  JoystickPosition lPos;
-  JoystickPosition rPos;
 };
