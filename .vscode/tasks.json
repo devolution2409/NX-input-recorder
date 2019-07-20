@@ -31,7 +31,7 @@
             "label": "Build Release",
             "type": "shell",
             "promptOnClose": true,
-            "command": "docker run --rm -v $(pwd):/input-recorder plutonium-sdk make -j8;",
+            "command": "${workspaceRoot}/.vscode/scripts/make.sh",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"

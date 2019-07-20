@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 // this should probably be cstring but whatever
-#include <string.h>
+//#include <string.h>
 // Include the main libnx system header, for Switch development
 #include <switch.h>
 
@@ -12,6 +12,7 @@
 #define INNER_HEAP_SIZE 0x80000
 
 // testing purposes
+#include "Recorder.hpp"
 #include <cstring>
 #include <fstream>
 #include <iomanip>
@@ -19,6 +20,8 @@
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
+
 extern "C" {
 // Sysmodules should not use applet*.
 u32 __nx_applet_type = AppletType_None;
@@ -108,6 +111,7 @@ void __attribute__((weak)) __appExit(void) {
 }
 
 } // end extern C
+
 // Main program entrypoint
 int main(int argc, char *argv[]) {
   // Initialization code can go here.
@@ -162,6 +166,8 @@ int main(int argc, char *argv[]) {
   if (R_FAILED(rc))
     fatalSimple(rc);
 
+  std::vector<InputRecorder *> recorders;
+
   while (true) {
 
     // wait on screen refresh i guess
@@ -183,53 +189,30 @@ int main(int argc, char *argv[]) {
       currFrame = 0;
       if (record) {
         fs.open("/input-recorder/test.txt", std::fstream::out);
-        std::string filename;
-        // getting title ID
-        u64 pid;
-        if (R_FAILED(pmdmntGetApplicationPid(&pid))) {
-          fs << std::endl << "couldn't read pid feelsdankman";
-        } else {
-          // Getting pID to get
-          u64 title;
-          fs << std::endl << "process id:" << pid;
-          // Getting title ID as ex
-          Result wut = pminfoGetTitleId(&title, pid);
-          if (R_FAILED(wut)) {
-            // if we cant get it, the directory should be unknown i guess
-            // fatalSimple();
-          } else {
-          }
-        }
+
+        // get number of controllers here.
+        // for now we will use P1_auto thing
+        recorders.push_back(new InputRecorder(CONTROLLER_P1_AUTO));
 
       }
 
       else {
-        // trying to  find out wtf we recorded:
+        // deleting the pointers
+        for (auto &i : recorders) {
+          delete i;
+        }
+        // clearing the array
+        recorders.clear();
 
         fs.close();
       }
     }
 
     if (record) {
-
-      // https://switchbrew.github.io/libnx/structJoystickPosition.html
-      JoystickPosition lPos;
-      JoystickPosition rPos;
-      // reading left & right joystick pos
-      hidJoystickRead(&lPos, CONTROLLER_P1_AUTO, JOYSTICK_LEFT);
-      hidJoystickRead(&rPos, CONTROLLER_P1_AUTO, JOYSTICK_RIGHT);
-
-      // write them i guess
-      // recording the joystick state
-
-      // https://switchbrew.github.io/libnx/hid_8h.html
-
-      // writing current frame as well as the pressed buttons and the sticks
-      // state
-      fs << kHeld << " " << lPos.dx << ";" << lPos.dy << " " << rPos.dx << ";"
-         << rPos.dy << std::endl;
-
-      currFrame++;
+      for (auto &i : recorders) {
+        InputInfos temp = i->Record();
+        fs << temp.controller << " " << temp.kHeld << std::endl;
+      }
     }
   }
   // Deinitialization and resources clean up code can go here.
