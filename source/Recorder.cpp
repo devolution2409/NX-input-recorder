@@ -22,3 +22,5 @@ InputInfos InputRecorder::Record() {
 
   return recorded;
 }
+
+InputRecorder::~InputRecorder() {}
