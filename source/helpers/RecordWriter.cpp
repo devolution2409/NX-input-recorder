@@ -2,19 +2,30 @@
 
 namespace Helper {
 
-RecordWriter::RecordWriter(std::string filename = "")
+RecordWriter::RecordWriter(std::string foldername = "")
 {
-    if (filename.empty()) {
+    if (foldername.empty()) {
 
         u64 titleID;
         try {
             titleID = Helper::System::GetActiveTitleID();
-            filename = std::to_string(titleID);
+            foldername = std::to_string(titleID);
         }
         catch (...) {
             // if we couldn't get id
-            filename = "Unknown.txt";
+            foldername = "unknown";
         }
+    }
+    // in any case we check if the directory exists
+    std::filesystem::directory dir = "sdcard:/input-recorder";
+
+    if (dir.exists()) {
+        dir = "sdcard:/input-recorder/" + foldername;
+        if (dir.exists()) {
+            this->mFoldername = dir;
+        }
+        std::filesystem::create_directory(
+            std::filesystem::path(this->mFoldername));
     }
 }
 

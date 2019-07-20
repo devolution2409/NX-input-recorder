@@ -54,7 +54,7 @@ CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti 
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=c++17
 #-fno-exceptions
 
 ASFLAGS	:=	-g $(ARCH)
