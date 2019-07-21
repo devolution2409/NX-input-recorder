@@ -17,8 +17,17 @@ RecordWriter::RecordWriter(std::string foldername)
         u64 titleID;
         try {
             titleID = Helper::System::GetActiveTitleID();
-            test << std::endl << "titleID:" << titleID << std::endl;
-            this->mFoldername = std::to_string(titleID);
+            // convert to decimal representation feelsdankman
+            std::stringstream ss; // heil forsenSheffy
+            ss << std::hex << titleID;
+
+            test << std::endl << "titleID:" << std::hex << titleID << std::endl;
+            // prefixing 0 and setting everything uppercase
+            std::string temp = "0" + ss.str();
+            for (auto &c : temp)
+                c = toupper(c);
+
+            this->mFoldername = temp;
         }
         catch (...) {
             // if we couldn't get id
@@ -49,42 +58,62 @@ RecordWriter::RecordWriter(std::string foldername)
     }
 
     if (R_FAILED(timeInitialize())) {
+        test << "failed to initialize time forsenD" << std::endl;
         // random file name i guess
     }
     else {
 
         // store a lambda
 
-        std::function<std::string()> getHumanReadableTime = []() {
+        std::function<std::string()> getHumanReadableTime = [&]() {
             u64 now;
             timeGetCurrentTime(TimeType_UserSystemClock, &now);
             const time_t rawtime = static_cast<const time_t>(now);
+            test << "raw time: " << rawtime << std::endl;
+            // this doesnt seem to work
+            /*
             struct tm *dt;
-            char buffer[30];
             dt = localtime(&rawtime);
-            strftime(buffer, sizeof(buffer), "%a-%b-%d-%T", dt);
-            return std::string(buffer);
+            test << "struct time: " << asctime(dt) << std::endl;
+            char buffer[30];
+            strftime(buffer, sizeof(buffer), "%a-%b-%d-%T", dt); */
+
+            std::string hrTime = strtok(ctime(&rawtime), "\n");
+            for (auto &c : hrTime) {
+                if (c == ' ')
+                    c = '_';
+                else if (c == ':')
+                    c = '-';
+            }
+
+            test << std::endl << "hrtime is now:" << hrTime << std::endl;
+
+            return hrTime;
         };
 
         this->mFilename = this->mFoldername.string() + "/" +
                           getHumanReadableTime() + ".record";
         timeExit();
     }
-    fs.open(this->mFilename, std::fstream::out);
+
+    test << std::endl << "trying Touching file:" << this->mFilename;
+
+    this->mFs.open(this->mFilename, std::fstream::out);
+    this->mFs << "hi nibs";
     test.close();
 }
 
-RecordWriter::~RecordWriter() { fs.close(); }
+RecordWriter::~RecordWriter() { this->mFs.close(); }
 
 void RecordWriter::AddInputs(InputInfos info) { this->infos.push_back(info); }
 
 void RecordWriter::WriteInfos()
 {
     for (const auto &i : this->infos) {
-        fs << i.controller << " " << i.kHeld << " " << i.lPos.dx << " "
-           << i.lPos.dy << " " << i.rPos.dx << " " << i.rPos.dy << " ";
+        this->mFs << i.controller << " " << i.kHeld << " " << i.lPos.dx << " "
+                  << i.lPos.dy << " " << i.rPos.dx << " " << i.rPos.dy << " ";
     }
-    fs << std::endl;
+    this->mFs << std::endl;
 }
 
 } // namespace Helper

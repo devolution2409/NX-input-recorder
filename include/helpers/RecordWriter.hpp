@@ -4,9 +4,12 @@
 // need the struct
 #include "Recorder.hpp"
 
+#include <cstring>
 #include <ctime> ///strftime
 #include <fstream>
 #include <functional>
+#include <iostream>
+#include <sstream>
 #include <string>
 
 #ifndef __has_include
@@ -40,7 +43,7 @@ class RecordWriter {
 
     filesystem::path mFoldername;
     std::string mFilename;
-    std::fstream fs;
+    std::fstream mFs;
 
     std::vector<InputInfos> infos;
 };
