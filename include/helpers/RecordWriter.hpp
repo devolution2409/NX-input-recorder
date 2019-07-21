@@ -4,7 +4,9 @@
 // need the struct
 #include "Recorder.hpp"
 
+#include <ctime> ///strftime
 #include <fstream>
+#include <functional>
 #include <string>
 
 #ifndef __has_include
