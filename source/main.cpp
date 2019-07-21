@@ -118,12 +118,15 @@ void __attribute__((weak)) __appExit(void)
 // Main program entrypoint
 int main(int argc, char *argv[])
 {
+    std::fstream fs;
+    fs.open("/input-recorder/debug_log.txt", std::fstream::out);
     bool record = false;
-
+    fs << "hello from main" << std::endl;
     Event vsync_event;
 
     Result rc;
     ViDisplay disp;
+    fs << "getting V1 SYNC event ZULUL " << std::endl;
     rc = viOpenDefaultDisplay(&disp);
     if (R_FAILED(rc))
         fatalSimple(rc);
@@ -131,14 +134,16 @@ int main(int argc, char *argv[])
     if (R_FAILED(rc))
         fatalSimple(rc);
 
+    fs << "declaring vector of recorders " << std::endl;
     std::vector<InputRecorder *> recorders;
+    fs << "declaring the writer FeelsDankMan " << std::endl;
     Helper::RecordWriter *writer;
-    std::fstream fs;
-    fs.open("/input-recorder/debug_log.txt", std::fstream::out);
+
     while (true) {
 
         // wait on screen refresh i guess
         // uh whats a good timeout kev
+        // fs << "waiting for next frame ResidentSleeper " << std::endl;
         rc = eventWait(&vsync_event, UINT64_MAX);
         if (R_FAILED(rc))
             fatalSimple(rc);
@@ -152,28 +157,37 @@ int main(int argc, char *argv[])
         // if those two are down at the sametime we start recording
         if (((kDown & KEY_PLUS) && (kHeld & KEY_MINUS)) ||
             ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))) {
+
             record = !record;
+            fs << "+- detected. record boolean is now:" << record << std::endl;
             // currFrame = 0;
             if (record) {
                 fs << "record detected " << std::endl;
-                //  writer = new Helper::RecordWriter();
-                fs << "writer created" << std::endl;
+                fs << "instanciating record writer?" << std::endl;
+                writer = new Helper::RecordWriter();
+                // fs << "writer created" << std::endl;
                 // get number of controllers here.
                 // for now we will use P1_auto thing
-                recorders.push_back(new InputRecorder(CONTROLLER_P1_AUTO));
-                fs << "pushed back the new InputRecorder in the recorders array"
-                   << std::endl;
+                // recorders.push_back(new InputRecorder(CONTROLLER_P1_AUTO));
+                // fs << "pushed back the new InputRecorder in the recorders
+                // array"
+                //   << std::endl;
             }
 
             else {
+                fs << "record stopped" << std::endl;
                 // deleting the pointers
                 for (auto &i : recorders) {
                     delete i;
                 }
                 // clearing the array
                 recorders.clear();
-                delete writer;
-                writer = nullptr;
+                if (writer != nullptr) {
+
+                    delete writer;
+                    writer = nullptr;
+                }
+                fs << "did we go this far?" << std::endl;
             }
         }
         // if record

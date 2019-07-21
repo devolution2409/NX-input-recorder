@@ -8,9 +8,9 @@ result=($?);
 
 if [ $result = 0 ]
 then
-	sudo chown -R devolution .; 
+	#sudo chown -R devolution .; 
 	#creating dist stuff
-	## the nsp 
+	## the nsp
 
 	mkdir -p ./dist/atmosphere/titles/$(grep "title_id" config.json  -m1 | cut -f 3 | sed 's/,//g' | sed 's/"//g'  ;);
 	echo "Moving .nsp to dist folder..";
@@ -26,5 +26,4 @@ else
 	echo "Error during make. Aborting..";
 
 fi
-# clean all the stuff
-#./clean.sh
+

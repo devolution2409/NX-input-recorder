@@ -1,6 +1,9 @@
 *.elf
 *.nacp
 *.key
+*.nso
+*.elf
+*.npdm
 build/
 ignore/
 dist/

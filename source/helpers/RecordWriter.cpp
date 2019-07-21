@@ -6,7 +6,9 @@ RecordWriter::RecordWriter(std::string foldername)
 {
     std::fstream test;
 
-    test.open("/input-recorder/debug_log.txt", std::fstream::out);
+    test.open("/input-recorder/debug_log2.txt", std::fstream::out);
+    test << "hello from constructor" << std::endl;
+
     // setting up the folder in which we want to write the recording
     int i = 0;
     test << ++i << std::endl;
