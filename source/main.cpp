@@ -16,6 +16,7 @@
 #include <iostream>
 #include <list>
 //#include <map>
+#include "helpers/Logger.hpp"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -119,6 +120,13 @@ void __attribute__((weak)) __appExit(void)
 int main(int argc, char *argv[])
 {
     std::fstream fs;
+
+    Logger test;
+    test->start();
+
+    test->trace("test");
+    //  Logger::getInstance()->start();
+
     fs.open("/input-recorder/debug_log.txt", std::fstream::out);
     bool record = false;
     fs << "hello from main" << std::endl;
@@ -137,7 +145,8 @@ int main(int argc, char *argv[])
     fs << "declaring vector of recorders " << std::endl;
     std::vector<InputRecorder *> recorders;
     fs << "declaring the writer FeelsDankMan " << std::endl;
-    Helper::RecordWriter *writer;
+    Helper::RecordWriter *writer =
+        nullptr; // silence this annoying maybe-unitialized
 
     while (true) {
 
@@ -168,7 +177,7 @@ int main(int argc, char *argv[])
                 // fs << "writer created" << std::endl;
                 // get number of controllers here.
                 // for now we will use P1_auto thing
-                // recorders.push_back(new InputRecorder(CONTROLLER_P1_AUTO));
+                recorders.push_back(new InputRecorder(CONTROLLER_P1_AUTO));
                 // fs << "pushed back the new InputRecorder in the recorders
                 // array"
                 //   << std::endl;
@@ -191,10 +200,10 @@ int main(int argc, char *argv[])
             }
         }
         // if record
-        if (false) {
+        if (record) {
 
             // getting all the infos from controllers
-            fs << "getting info " << std::endl;
+            // fs << "getting info " << std::endl;
             for (auto &i : recorders) {
                 writer->AddInputs(i->Record());
             }

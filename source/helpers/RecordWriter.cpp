@@ -4,24 +4,16 @@ namespace Helper {
 
 RecordWriter::RecordWriter(std::string foldername)
 {
-    std::fstream test;
     filesystem::path basePath = "/input-recorder";
 
-    test.open("/input-recorder/debug_log2.txt", std::fstream::out);
-    test << "hello from constructor" << std::endl;
-
     // setting up the folder in which we want to write the recording
-    test << "here" << std::endl;
     if (foldername.empty()) {
-        test << "nig" << std::endl;
         u64 titleID;
         try {
             titleID = Helper::System::GetActiveTitleID();
             // convert to decimal representation feelsdankman
             std::stringstream ss; // heil forsenSheffy
             ss << std::hex << titleID;
-
-            test << std::endl << "titleID:" << std::hex << titleID << std::endl;
             // prefixing 0 and setting everything uppercase
             std::string temp = "0" + ss.str();
             for (auto &c : temp)
@@ -31,7 +23,6 @@ RecordWriter::RecordWriter(std::string foldername)
         }
         catch (...) {
             // if we couldn't get id
-            test << "catch block detected" << std::endl;
             this->mFoldername = "unknown";
         }
     }
@@ -40,13 +31,9 @@ RecordWriter::RecordWriter(std::string foldername)
         basePath.string() + "/" + this->mFoldername.string();
 
     if (filesystem::exists(basePath)) {
-        test << basePath << " dir exists" << std::endl;
+
         // check if sub directory exists
-        if (filesystem::exists(fullPath)) {
-            test << "this one exists for some reason:" << fullPath << std::endl;
-        }
-        else {
-            test << "trying to create dir" << std::endl;
+        if (!filesystem::exists(fullPath)) {
             filesystem::create_directory(fullPath);
         }
         this->mFoldername = fullPath;
@@ -58,7 +45,7 @@ RecordWriter::RecordWriter(std::string foldername)
     }
 
     if (R_FAILED(timeInitialize())) {
-        test << "failed to initialize time forsenD" << std::endl;
+
         // random file name i guess
     }
     else {
@@ -69,14 +56,6 @@ RecordWriter::RecordWriter(std::string foldername)
             u64 now;
             timeGetCurrentTime(TimeType_UserSystemClock, &now);
             const time_t rawtime = static_cast<const time_t>(now);
-            test << "raw time: " << rawtime << std::endl;
-            // this doesnt seem to work
-            /*
-            struct tm *dt;
-            dt = localtime(&rawtime);
-            test << "struct time: " << asctime(dt) << std::endl;
-            char buffer[30];
-            strftime(buffer, sizeof(buffer), "%a-%b-%d-%T", dt); */
 
             std::string hrTime = strtok(ctime(&rawtime), "\n");
             for (auto &c : hrTime) {
@@ -86,8 +65,6 @@ RecordWriter::RecordWriter(std::string foldername)
                     c = '-';
             }
 
-            test << std::endl << "hrtime is now:" << hrTime << std::endl;
-
             return hrTime;
         };
 
@@ -96,11 +73,7 @@ RecordWriter::RecordWriter(std::string foldername)
         timeExit();
     }
 
-    test << std::endl << "trying Touching file:" << this->mFilename;
-
     this->mFs.open(this->mFilename, std::fstream::out);
-    this->mFs << "hi nibs";
-    test.close();
 }
 
 RecordWriter::~RecordWriter() { this->mFs.close(); }
@@ -114,6 +87,8 @@ void RecordWriter::WriteInfos()
                   << i.lPos.dy << " " << i.rPos.dx << " " << i.rPos.dy << " ";
     }
     this->mFs << std::endl;
+    // don't forget to clear the infos to prevent retarded behavior OMGScoods
+    this->infos.clear();
 }
 
 } // namespace Helper
