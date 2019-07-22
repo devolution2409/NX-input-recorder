@@ -30,13 +30,13 @@ class AsyncLogger {
     Result start();
     void stop();
 
-    inline bool is_running() const { return this->running; }
+    bool is_running() const { return this->running; }
 
-    inline void set_log_level(log_lvl lvl) { this->lvl = lvl; }
-    inline log_lvl get_log_lvl() const { return this->lvl; }
+    void set_log_level(log_lvl lvl) { this->lvl = lvl; }
+    log_lvl get_log_lvl() const { return this->lvl; }
 
     template <typename... Args>
-    inline void enqueue(log_lvl lvl, const char *fmt, Args &&... args)
+    void enqueue(log_lvl lvl, const char *fmt, Args &&... args)
     {
 #ifdef DEBUG
         if (lvl < this->lvl || !is_running())
@@ -52,14 +52,14 @@ class AsyncLogger {
     }
 
     template <typename... Args>
-    inline void enqueue(const std::string &fmt, log_lvl lvl, Args &&... args)
+    void enqueue(const std::string &fmt, log_lvl lvl, Args &&... args)
     {
         enqueue(lvl, fmt.c_str(), std::forward<Args>(args)...);
     }
 
 #define DECL_LVL_HELPER(lvl)                                                   \
     template <typename Fmt, typename... Args>                                  \
-    inline void lvl(Fmt &&fmt, Args &&... args)                                \
+    void lvl(Fmt &&fmt, Args &&... args)                                       \
     {                                                                          \
         enqueue(lvl_##lvl, std::forward<Fmt>(fmt),                             \
                 std::forward<Args>(args)...);                                  \

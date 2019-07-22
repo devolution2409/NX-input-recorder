@@ -7,20 +7,16 @@
 #include <switch.h>
 
 #include "Recorder.hpp"
+#include "helpers/Logger.hpp"
 #include "helpers/RecordWriter.hpp"
 #include "helpers/SystemHelper.hpp"
 
 #include <cstring>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <list>
-//#include <map>
-#include "helpers/Logger.hpp"
-#include <fstream>
 #include <string>
 #include <vector>
-
 // Adjust size as needed.
 #define INNER_HEAP_SIZE 0x80000
 extern "C" {
@@ -119,25 +115,19 @@ void __attribute__((weak)) __appExit(void)
 // Main program entrypoint
 int main(int argc, char *argv[])
 {
-    std::fstream fs;
-
     Logger test;
     test->start();
 
-    test->trace("test from main");
-    std::stringstream wtf;
-    wtf << "Adress of my shit here " << test.GetAdress();
-    test->trace(wtf.str().c_str());
+    test->trace("test from main\n");
+
     //  Logger::getInstance()->start();
 
-    fs.open("/input-recorder/debug_log.txt", std::fstream::out);
     bool record = false;
-    fs << "hello from main" << std::endl;
     Event vsync_event;
 
     Result rc;
     ViDisplay disp;
-    fs << "getting V1 SYNC event ZULUL " << std::endl;
+
     rc = viOpenDefaultDisplay(&disp);
     if (R_FAILED(rc))
         fatalSimple(rc);
@@ -145,9 +135,7 @@ int main(int argc, char *argv[])
     if (R_FAILED(rc))
         fatalSimple(rc);
 
-    fs << "declaring vector of recorders " << std::endl;
     std::vector<InputRecorder *> recorders;
-    fs << "declaring the writer FeelsDankMan " << std::endl;
     Helper::RecordWriter *writer =
         nullptr; // silence this annoying maybe-unitialized
 
@@ -170,11 +158,9 @@ int main(int argc, char *argv[])
             ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))) {
 
             record = !record;
-            fs << "+- detected. record boolean is now:" << record << std::endl;
             // currFrame = 0;
             if (record) {
-                fs << "record detected " << std::endl;
-                fs << "instanciating record writer?" << std::endl;
+
                 writer = new Helper::RecordWriter();
                 // fs << "writer created" << std::endl;
                 // get number of controllers here.
@@ -186,7 +172,6 @@ int main(int argc, char *argv[])
             }
 
             else {
-                fs << "record stopped" << std::endl;
                 // deleting the pointers
                 for (auto &i : recorders) {
                     delete i;
@@ -198,7 +183,6 @@ int main(int argc, char *argv[])
                     delete writer;
                     writer = nullptr;
                 }
-                fs << "did we go this far?" << std::endl;
             }
         }
         // if record
@@ -209,12 +193,10 @@ int main(int argc, char *argv[])
             for (auto &i : recorders) {
                 writer->AddInputs(i->Record());
             }
-            // writing them
-            fs << "writing infos " << std::endl;
+            // writing them to the destination file
             writer->WriteInfos();
         }
     }
-    fs.close();
     // Deinitialization and resources clean up code can go here.
     return 0;
 }
