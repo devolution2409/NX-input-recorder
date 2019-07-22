@@ -124,7 +124,10 @@ int main(int argc, char *argv[])
     Logger test;
     test->start();
 
-    test->trace("test");
+    test->trace("test from main");
+    std::stringstream wtf;
+    wtf << "Adress of my shit here " << test.GetAdress();
+    test->trace(wtf.str().c_str());
     //  Logger::getInstance()->start();
 
     fs.open("/input-recorder/debug_log.txt", std::fstream::out);
@@ -149,7 +152,6 @@ int main(int argc, char *argv[])
         nullptr; // silence this annoying maybe-unitialized
 
     while (true) {
-
         // wait on screen refresh i guess
         // uh whats a good timeout kev
         // fs << "waiting for next frame ResidentSleeper " << std::endl;

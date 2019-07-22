@@ -3,6 +3,14 @@
 InputRecorder::InputRecorder(HidControllerID controller)
     : mController(controller)
 {
+
+    Logger test;
+    test->start();
+
+    test->trace("Input Recorder created for controller %i", controller);
+    std::stringstream wtf;
+    wtf << "Adress of my shit here " << test.GetAdress();
+    test->trace(wtf.str().c_str());
 }
 
 // this records ONE frame

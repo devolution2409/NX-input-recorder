@@ -6,6 +6,9 @@
 #include <string>
 #include <switch.h>
 
+// debug the stuff
+#include <fstream>
+
 class AsyncLogger {
   public:
     enum log_lvl : u8 {

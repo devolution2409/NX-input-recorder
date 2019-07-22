@@ -3,6 +3,7 @@
 #ifndef _SINGLETON_H
 #define _SINGLETON_H
 
+#include <memory>
 // context is needed for singleton(int) to call Context::init
 // so init has to be static and must return a pointer to whatever the class you
 // want to singletonize is
@@ -14,6 +15,8 @@ template <typename T, typename CONTEXT> class Singleton {
     const T *operator->() const { return mpInstance; }
     T &operator*() { return *mpInstance; }
     const T &operator*() const { return *mpInstance; }
+
+    const T *GetAdress() { return std::addressof(*mpInstance); };
 
   protected:
     Singleton()

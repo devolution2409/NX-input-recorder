@@ -1,5 +1,7 @@
 #pragma once
 
+#include "helpers/Logger.hpp"
+#include <sstream>
 #include <switch.h>
 // https://switchbrew.github.io/libnx/hid_8h.html
 /*   CONTROLLER_PLAYER_1 = 0,
@@ -15,21 +17,21 @@
   CONTROLLER_P1_AUTO = 10  */
 
 struct InputInfos {
-  HidControllerID controller;
-  u64 kHeld;
-  JoystickPosition lPos;
-  JoystickPosition rPos;
+    HidControllerID controller;
+    u64 kHeld;
+    JoystickPosition lPos;
+    JoystickPosition rPos;
 };
 
 class InputRecorder {
 
-public:
-  // Specify which controller we want to record
-  InputRecorder(HidControllerID controller);
-  ~InputRecorder();
-  InputInfos Record();
+  public:
+    // Specify which controller we want to record
+    InputRecorder(HidControllerID controller);
+    ~InputRecorder();
+    InputInfos Record();
 
-private:
-  HidControllerID mController; // which controller are we recording
-  InputRecorder();
+  private:
+    HidControllerID mController; // which controller are we recording
+    InputRecorder();
 };
