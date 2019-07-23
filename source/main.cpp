@@ -19,6 +19,9 @@
 #include <vector>
 // Adjust size as needed.
 #define INNER_HEAP_SIZE 0x80000
+
+// add wrapper to logger for the init functions i guess
+
 extern "C" {
 // Sysmodules should not use applet*.
 u32 __nx_applet_type = AppletType_None;
@@ -115,10 +118,8 @@ void __attribute__((weak)) __appExit(void)
 // Main program entrypoint
 int main(int argc, char *argv[])
 {
-    Logger test;
-    test->start();
-
-    test->trace("test from main\n");
+    Logger logger;
+    logger->start();
 
     //  Logger::getInstance()->start();
 
@@ -153,13 +154,17 @@ int main(int argc, char *argv[])
         hidScanInput();
         u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
         u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
-        // if those two are down at the sametime we start recording
+        // if those two are down at the sametime we toggle recording
         if (((kDown & KEY_PLUS) && (kHeld & KEY_MINUS)) ||
             ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))) {
 
             record = !record;
+
+            logger->info("Shortcut used\n");
+
             // currFrame = 0;
             if (record) {
+                logger->info("Recording starts..\n");
 
                 writer = new Helper::RecordWriter();
                 // fs << "writer created" << std::endl;
@@ -172,6 +177,7 @@ int main(int argc, char *argv[])
             }
 
             else {
+                logger->info("Recording stops..\n");
                 // deleting the pointers
                 for (auto &i : recorders) {
                     delete i;

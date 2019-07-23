@@ -3,6 +3,7 @@
 
 // need the struct
 #include "Recorder.hpp"
+#include "helpers/RecordWriter.hpp"
 
 #include <cstring>
 #include <ctime> ///strftime
@@ -11,7 +12,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
 #ifndef __has_include
 static_assert(false, "__has_include not supported");
 #else

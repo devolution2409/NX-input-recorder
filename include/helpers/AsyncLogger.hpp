@@ -30,10 +30,10 @@ class AsyncLogger {
     Result start();
     void stop();
 
-    bool is_running() const { return this->running; }
+    inline bool is_running() const { return this->running; }
 
-    void set_log_level(log_lvl lvl) { this->lvl = lvl; }
-    log_lvl get_log_lvl() const { return this->lvl; }
+    inline void set_log_level(log_lvl lvl) { this->lvl = lvl; }
+    inline log_lvl get_log_lvl() const { return this->lvl; }
 
     template <typename... Args>
     void enqueue(log_lvl lvl, const char *fmt, Args &&... args)
@@ -52,7 +52,7 @@ class AsyncLogger {
     }
 
     template <typename... Args>
-    void enqueue(const std::string &fmt, log_lvl lvl, Args &&... args)
+    inline void enqueue(const std::string &fmt, log_lvl lvl, Args &&... args)
     {
         enqueue(lvl, fmt.c_str(), std::forward<Args>(args)...);
     }

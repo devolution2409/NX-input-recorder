@@ -16,7 +16,7 @@ template <typename T, typename CONTEXT> class Singleton {
     T &operator*() { return *mpInstance; }
     const T &operator*() const { return *mpInstance; }
 
-    const T *GetAdress() { return std::addressof(*mpInstance); };
+    const T *GetAddress() { return std::addressof(*mpInstance); };
 
   protected:
     Singleton()

@@ -4,6 +4,8 @@ namespace Helper {
 
 RecordWriter::RecordWriter(std::string foldername)
 {
+    Logger logger;
+    logger->trace("Created recorder");
     filesystem::path basePath = "/input-recorder";
 
     // setting up the folder in which we want to write the recording
@@ -45,7 +47,8 @@ RecordWriter::RecordWriter(std::string foldername)
     }
 
     if (R_FAILED(timeInitialize())) {
-
+        logger->error(
+            "Failed to initialize time library. Filename will be random\n");
         // random file name i guess
     }
     else {
@@ -72,11 +75,14 @@ RecordWriter::RecordWriter(std::string foldername)
                           getHumanReadableTime() + ".record";
         timeExit();
     }
-
+    logger->trace("Filename is: '%s'", this->mFilename);
     this->mFs.open(this->mFilename, std::fstream::out);
 }
 
-RecordWriter::~RecordWriter() { this->mFs.close(); }
+RecordWriter::~RecordWriter()
+{
+    // don't need to close the file as destructor of fstream does that..
+}
 
 void RecordWriter::AddInputs(InputInfos info) { this->infos.push_back(info); }
 
