@@ -75,7 +75,7 @@ RecordWriter::RecordWriter(std::string foldername)
                           getHumanReadableTime() + ".record";
         timeExit();
     }
-    logger->trace("Filename is: '%s'", this->mFilename);
+    logger->trace("Filename is: '%s\r\n'", this->mFilename);
     this->mFs.open(this->mFilename, std::fstream::out);
 }
 

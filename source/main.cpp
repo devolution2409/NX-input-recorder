@@ -11,6 +11,7 @@
 #include "helpers/RecordWriter.hpp"
 #include "helpers/SystemHelper.hpp"
 
+#include "ConfigManager.hpp"
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -118,9 +119,12 @@ void __attribute__((weak)) __appExit(void)
 // Main program entrypoint
 int main(int argc, char *argv[])
 {
+
     Logger logger;
     logger->start();
 
+    logger->info("Logger created. Input-Recorder compiled at:%s; %s \r\n",
+                 __DATE__, __TIME__);
     //  Logger::getInstance()->start();
 
     bool record = false;
@@ -158,8 +162,11 @@ int main(int argc, char *argv[])
         if (((kDown & KEY_PLUS) && (kHeld & KEY_MINUS)) ||
             ((kDown & KEY_MINUS) && (kHeld & KEY_PLUS))) {
 
-            record = !record;
+            // read the config on each key to check if it changed
+            // (companion app and all)
+            ConfigManager Config;
 
+            record = !record;
             logger->info("Shortcut used\n");
 
             // currFrame = 0;
