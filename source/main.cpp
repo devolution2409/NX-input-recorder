@@ -167,11 +167,11 @@ int main(int argc, char *argv[])
             ConfigManager Config;
 
             record = !record;
-            logger->info("Shortcut used\n");
+            logger->info("Shortcut used\r\n");
 
             // currFrame = 0;
             if (record) {
-                logger->info("Recording starts..\n");
+                logger->info("Recording starts..\r\n");
 
                 writer = new Helper::RecordWriter();
                 // fs << "writer created" << std::endl;
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
             }
 
             else {
-                logger->info("Recording stops..\n");
+                logger->info("Recording stops..\r\n");
                 // deleting the pointers
                 for (auto &i : recorders) {
                     delete i;

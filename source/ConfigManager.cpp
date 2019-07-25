@@ -62,7 +62,7 @@ void ConfigData::WriteConfig()
     ini->sections.push_back(new IniSection(
         SEMICOLON_COMMENT,
         "time <number> : start as soon as <number> seconds have elapsed"));
-    < IniSection *record = new IniSection(SECTION, "record");
+    IniSection *record = new IniSection(SECTION, "record");
 
     if (std::get<0>(this->mMode) == RecordMode::IMMEDIATE) {
         record->options.push_back(new IniOption("start", "immediate"));
@@ -167,7 +167,7 @@ void ConfigData::ReadConfig()
                     logger->trace(
                         "Adding %s to the list of controller that are "
                         "to be recorded.\r\n",
-                        i->key);
+                        i->key.c_str());
                 }
 
             } catch (const std::out_of_range &oor) {

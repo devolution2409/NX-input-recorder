@@ -1,11 +1,12 @@
 #include "helpers/RecordWriter.hpp"
 
-namespace Helper {
+namespace Helper
+{
 
 RecordWriter::RecordWriter(std::string foldername)
 {
     Logger logger;
-    logger->trace("Created recorder");
+    logger->trace("Created Writer\n");
     filesystem::path basePath = "/input-recorder";
 
     // setting up the folder in which we want to write the recording
@@ -22,8 +23,7 @@ RecordWriter::RecordWriter(std::string foldername)
                 c = toupper(c);
 
             this->mFoldername = temp;
-        }
-        catch (...) {
+        } catch (...) {
             // if we couldn't get id
             this->mFoldername = "unknown";
         }
@@ -39,8 +39,7 @@ RecordWriter::RecordWriter(std::string foldername)
             filesystem::create_directory(fullPath);
         }
         this->mFoldername = fullPath;
-    }
-    else {
+    } else {
         filesystem::create_directory(basePath);
 
         filesystem::create_directory(fullPath);
@@ -48,10 +47,9 @@ RecordWriter::RecordWriter(std::string foldername)
 
     if (R_FAILED(timeInitialize())) {
         logger->error(
-            "Failed to initialize time library. Filename will be random\n");
+            "Failed to initialize time library. Filename will be random.\r\n");
         // random file name i guess
-    }
-    else {
+    } else {
 
         // store a lambda
 
@@ -75,7 +73,7 @@ RecordWriter::RecordWriter(std::string foldername)
                           getHumanReadableTime() + ".record";
         timeExit();
     }
-    logger->trace("Filename is: '%s\r\n'", this->mFilename);
+    logger->trace("Filename is: '%s\r\n'", this->mFilename.c_str());
     this->mFs.open(this->mFilename, std::fstream::out);
 }
 
