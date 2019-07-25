@@ -68,6 +68,7 @@ class ConfigData
     void ReadConfig();
 
   private:
+    void WriteConfig();
     void WriteInitialConfig();
     std::vector<HidControllerID> mControllersToRecord;
     // basically int will the be option. if record mode == immediate we dont
@@ -75,6 +76,7 @@ class ConfigData
     // be the number of seconds etc
     std::tuple<RecordMode, int> mMode;
 
+    // todo: better way to do this? it feels lidl
     const std::map<HidControllerID, std::string> controllerToString = {
         {CONTROLLER_P1_AUTO, "CONTROLLER_P1_AUTO"},
         {CONTROLLER_PLAYER_2, "CONTROLLER_PLAYER_2"},
@@ -84,7 +86,17 @@ class ConfigData
         {CONTROLLER_PLAYER_6, "CONTROLLER_PLAYER_6"},
         {CONTROLLER_PLAYER_7, "CONTROLLER_PLAYER_7"},
         {CONTROLLER_PLAYER_8, "CONTROLLER_PLAYER_8"},
+    };
 
+    const std::map<std::string, HidControllerID> stringToController = {
+        {"CONTROLLER_P1_AUTO", CONTROLLER_P1_AUTO},
+        {"CONTROLLER_PLAYER_2", CONTROLLER_PLAYER_2},
+        {"CONTROLLER_PLAYER_3", CONTROLLER_PLAYER_3},
+        {"CONTROLLER_PLAYER_4", CONTROLLER_PLAYER_4},
+        {"CONTROLLER_PLAYER_5", CONTROLLER_PLAYER_5},
+        {"CONTROLLER_PLAYER_6", CONTROLLER_PLAYER_6},
+        {"CONTROLLER_PLAYER_7", CONTROLLER_PLAYER_7},
+        {"CONTROLLER_PLAYER_8", CONTROLLER_PLAYER_8},
     };
 
     const std::string filename = "sdmc:/input-recorder/config.ini";

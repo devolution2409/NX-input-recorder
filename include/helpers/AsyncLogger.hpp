@@ -9,7 +9,8 @@
 // debug the stuff
 #include <fstream>
 
-class AsyncLogger {
+class AsyncLogger
+{
   public:
     enum log_lvl : u8 {
         lvl_trace,
@@ -52,7 +53,7 @@ class AsyncLogger {
     }
 
     template <typename... Args>
-    inline void enqueue(const std::string &fmt, log_lvl lvl, Args &&... args)
+    inline void enqueue(log_lvl lvl, const std::string &fmt, Args &&... args)
     {
         enqueue(lvl, fmt.c_str(), std::forward<Args>(args)...);
     }
