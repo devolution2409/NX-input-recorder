@@ -50,5 +50,22 @@ u64 GetActiveTitleID()
     return title;
 }
 
+std::vector<HidControllerID> GetConnectedControllers()
+{
+    std::vector<HidControllerID> result;
+    std::vector<HidControllerID> controllerList = {
+        CONTROLLER_P1_AUTO,  CONTROLLER_PLAYER_2, CONTROLLER_PLAYER_3,
+        CONTROLLER_PLAYER_4, CONTROLLER_PLAYER_5, CONTROLLER_PLAYER_6,
+        CONTROLLER_PLAYER_7, CONTROLLER_PLAYER_8,
+    };
+
+    for (auto &i : controllerList)
+        if (hidIsControllerConnected(i))
+            result.push_back(i);
+
+    return result;
+    // hidIsControllerConnected (HidControllerID id)
+} // namespace System
+
 } // namespace System
 } // namespace Helper

@@ -21,9 +21,11 @@ struct InputInfos {
     u64 kHeld;
     JoystickPosition lPos;
     JoystickPosition rPos;
+    SixAxisSensorValues motions;
 };
 
-class InputRecorder {
+class InputRecorder
+{
 
   public:
     // Specify which controller we want to record
@@ -34,4 +36,5 @@ class InputRecorder {
   private:
     HidControllerID mController; // which controller are we recording
     InputRecorder();
+    u32 mHandles[2];
 };

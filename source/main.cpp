@@ -18,6 +18,7 @@
 #include <list>
 #include <string>
 #include <vector>
+
 // Adjust size as needed.
 #define INNER_HEAP_SIZE 0x80000
 
@@ -164,7 +165,7 @@ int main(int argc, char *argv[])
 
             // read the config on each key to check if it changed
             // (companion app and all)
-            ConfigManager Config;
+            ConfigManager config;
 
             record = !record;
             logger->info("Shortcut used\r\n");
@@ -174,13 +175,21 @@ int main(int argc, char *argv[])
                 logger->info("Recording starts..\r\n");
 
                 writer = new Helper::RecordWriter();
-                // fs << "writer created" << std::endl;
-                // get number of controllers here.
-                // for now we will use P1_auto thing
-                recorders.push_back(new InputRecorder(CONTROLLER_P1_AUTO));
-                // fs << "pushed back the new InputRecorder in the recorders
-                // array"
-                //   << std::endl;
+
+                // getting intersection between which controller we want to
+                // record and the one that are connected
+                std::vector<HidControllerID> saneControllers;
+
+                std::set_intersection(
+                    Helper::System::GetConnectedControllers().begin(),
+                    Helper::System::GetConnectedControllers().end(),
+                    config->GetControllers().begin(),
+                    config->GetControllers().end(),
+                    std::back_inserter(saneControllers));
+
+                for (auto &i : saneControllers) {
+                    recorders.push_back(new InputRecorder(i));
+                }
             }
 
             else {

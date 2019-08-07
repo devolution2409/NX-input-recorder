@@ -42,7 +42,7 @@ class ConfigData
     ConfigData();
     ~ConfigData();
 
-    inline std::vector<HidControllerID> GetController() const
+    inline std::vector<HidControllerID> GetControllers() const
     {
         return this->mControllersToRecord;
     };
